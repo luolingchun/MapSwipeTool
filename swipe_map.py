@@ -10,13 +10,14 @@ from qgis.gui import QgsMapCanvasItem
 class SwipeMap(QgsMapCanvasItem):
     def __init__(self, canvas):
         super(SwipeMap, self).__init__(canvas)
+        self.copy_image = None
         self.length = 0
         self.isVertical = True
         self.layers = []
         self.is_paint = False
 
     def setContent(self, image, rect):
-        self.copyimage = image
+        self.copy_image = image
         self.setRect(rect)
 
     def clear(self):
@@ -72,5 +73,5 @@ class SwipeMap(QgsMapCanvasItem):
             painter.setPen(pen)
             painter.drawLine(QPointF(0, self.y), QPointF(w, self.y))
 
-        image = self.copyimage.copy(self.startx, self.starty, self.endx, self.endy)
+        image = self.copy_image.copy(self.startx, self.starty, self.endx, self.endy)
         painter.drawImage(QRectF(self.startx, self.starty, self.endx, self.endy), image)

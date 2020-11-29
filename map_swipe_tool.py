@@ -9,23 +9,25 @@ from qgis.gui import QgsMapTool
 from qgis.core import QgsProject, QgsMapSettings, QgsMapRendererParallelJob
 from .swipe_map import SwipeMap
 
+here = os.path.dirname(__file__)
+project = QgsProject.instance()
+
 
 class MapSwipeTool(QgsMapTool):
-    def __init__(self, plugin_path, combobox, iface):
-        super(MapSwipeTool, self).__init__(iface.mapCanvas())
-        self.combobox = combobox
-        self.map_canvas = iface.mapCanvas()
-        self.view = iface.layerTreeView()
+    def __init__(self, height, layer_combobox, map_canvas):
+        super(MapSwipeTool, self).__init__(map_canvas)
+        self.layer_combobox = layer_combobox
+        self.map_canvas = map_canvas
         self.swipe = SwipeMap(self.map_canvas)
-        self.hasSwipe = None
+        self.hasSwipe = False
         self.start_point = QPoint()
 
-        self.cursorSV = QCursor(QPixmap(os.path.join(plugin_path, 'images/split_v.png')))
-        self.cursorSH = QCursor(QPixmap(os.path.join(plugin_path, 'images/split_h.png')))
-        self.cursorUP = QCursor(QPixmap(os.path.join(plugin_path, 'images/up.png')))
-        self.cursorDOWN = QCursor(QPixmap(os.path.join(plugin_path, 'images/down.png')))
-        self.cursorLEFT = QCursor(QPixmap(os.path.join(plugin_path, 'images/left.png')))
-        self.cursorRIGHT = QCursor(QPixmap(os.path.join(plugin_path, 'images/right.png')))
+        self.cursorSV = QCursor(QPixmap(os.path.join(here, 'images/split_v.png')).scaledToHeight(height))
+        self.cursorSH = QCursor(QPixmap(os.path.join(here, 'images/split_h.png')).scaledToHeight(height))
+        self.cursorUP = QCursor(QPixmap(os.path.join(here, 'images/up.png')).scaledToHeight(height))
+        self.cursorDOWN = QCursor(QPixmap(os.path.join(here, 'images/down.png')).scaledToHeight(height))
+        self.cursorLEFT = QCursor(QPixmap(os.path.join(here, 'images/left.png')).scaledToHeight(height))
+        self.cursorRIGHT = QCursor(QPixmap(os.path.join(here, 'images/right.png')).scaledToHeight(height))
 
     def activate(self):
         self.map_canvas.setCursor(QCursor(Qt.CrossCursor))
@@ -75,13 +77,13 @@ class MapSwipeTool(QgsMapTool):
             if 0.25 * w < e.x() < 0.75 * w and e.y() > 0.5 * h:
                 self.canvas().setCursor(self.cursorUP)
 
-    def _connect(self, isConnect=True):
+    def _connect(self, is_connect=True):
         signal_slot = (
             {'signal': self.map_canvas.mapCanvasRefreshed, 'slot': self.setMap},
-            {'signal': self.combobox.currentIndexChanged, 'slot': self.setLayersSwipe},
-            {'signal': QgsProject.instance().removeAll, 'slot': self.disable}
+            {'signal': self.layer_combobox.currentIndexChanged, 'slot': self.setLayersSwipe},
+            {'signal': project.removeAll, 'slot': self.disable}
         )
-        if isConnect:
+        if is_connect:
             for item in signal_slot:
                 item['signal'].connect(item['slot'])
         else:
@@ -89,10 +91,10 @@ class MapSwipeTool(QgsMapTool):
                 item['signal'].disconnect(item['slot'])
 
     def setLayersSwipe(self, ):
-        current_layer = QgsProject.instance().mapLayersByName(self.combobox.currentText())
+        current_layer = project.mapLayersByName(self.layer_combobox.currentText())
         if len(current_layer) == 0:
             return
-        layers = QgsProject.instance().layerTreeRoot().layerOrder()
+        layers = project.layerTreeRoot().checkedLayers()
         layer_list = []
         for layer in layers:
             if layer.id() == current_layer[0].id():
