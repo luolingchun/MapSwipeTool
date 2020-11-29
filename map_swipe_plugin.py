@@ -27,6 +27,7 @@ class MapSwipePlugin:
         self.swipe_action.setCheckable(True)
         self.swipe_action.triggered.connect(self.run)
         self.layer_combobox = QComboBox(self.tool_bar)
+        self.layer_combobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
         self.tool_bar.setContentsMargins(0, 0, 0, 0)
         height = self.iface.iconSize().height() + 8
         self.layer_combobox.setFixedHeight(height)
