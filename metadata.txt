@@ -1,14 +1,8 @@
 [general]
 name=MapSwipeTool
 description=地图卷帘工具
-about=QGIS插件——地图卷帘工具，参考已有的地图卷帘工具:
-    https://github.com/lmotta/mapswipetool_plugin
-    做了一些优化：
-    - 图层组支持
-    - 图层选择
-    - 操作优化
 
-version=1.0.0
+version=1.1.0
 tags=swipe,layers
 qgisMinimumVersion=3.0
 author=llc
@@ -17,6 +11,3 @@ homepage=https://github.com/luolingchun/MapSwipeTool
 repository=https://github.com/luolingchun/MapSwipeTool
 
 icon=icon.png
-
-changelog=
-    - 初始版本

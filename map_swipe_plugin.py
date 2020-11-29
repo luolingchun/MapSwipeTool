@@ -5,78 +5,63 @@
 import os
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QComboBox, QPushButton
+from PyQt5.QtWidgets import QComboBox, QAction, QToolBar
 from qgis.core import QgsProject
-from qgis.gui import QgsMapToolPan
+from qgis.gui import QgsMapToolPan, QgisInterface
 
 from .map_swipe_tool import MapSwipeTool
 
-plugin_path = os.path.dirname(__file__)
+here = os.path.dirname(__file__)
+project = QgsProject.instance()
 
 
 class MapSwipePlugin:
 
     def __init__(self, iface):
-        self.menu = self.title = "卷帘工具"
-        self.iface = iface
-        self.canvas = self.iface.mapCanvas()
-        self.prevTool = self.canvas.mapTool()
+        self.iface: QgisInterface = iface
+        self.map_canvas = self.iface.mapCanvas()
+        self.prevTool = self.map_canvas.mapTool()
 
-        self.widget_action = None
-        self.tool = None
-        # 图标大小
-        self.icon_size = self.iface.iconSize()
-        self.height = self.icon_size.height() + 8
+        self.tool_bar: QToolBar = self.iface.addToolBar('Swipe Toolbar')
+        self.swipe_action = QAction(QIcon(os.path.join(here, 'icon.png')), 'swipe tool', self.tool_bar)
+        self.swipe_action.setCheckable(True)
+        self.swipe_action.triggered.connect(self.run)
+        self.layer_combobox = QComboBox(self.tool_bar)
+        self.tool_bar.setContentsMargins(0, 0, 0, 0)
+        height = self.iface.iconSize().height() + 8
+        self.layer_combobox.setFixedHeight(height)
+
+        self.swipe_tool = MapSwipeTool(height, self.layer_combobox, self.map_canvas)
 
         # 图层变化信号
-        QgsProject.instance().layerTreeRoot().layerOrderChanged.connect(self.combobox_add_items)
+        project.layerTreeRoot().layerOrderChanged.connect(self.combobox_add_items)
+        project.layerTreeRoot().visibilityChanged.connect(self.combobox_add_items)
+        project.layerTreeRoot().nameChanged.connect(self.combobox_add_items)
+
+        # 初始化图层
+        self.combobox_add_items()
 
     def initGui(self):
-        self._create_widget()
-        self.widget_action = self.iface.addToolBarWidget(self.widget)
-        self.tool = MapSwipeTool(plugin_path, self.combobox, self.iface)
+        self.tool_bar.addAction(self.swipe_action)
+        self.tool_bar.addWidget(self.layer_combobox)
 
     def unload(self):
-        if self.prevTool and self.prevTool != self.tool:
-            self.canvas.setMapTool(self.prevTool)
+        if self.prevTool and self.prevTool != self.swipe_tool:
+            self.map_canvas.setMapTool(self.prevTool)
         else:
-            self.canvas.setMapTool(QgsMapToolPan(self.iface.mapCanvas()))
-        self.iface.removeToolBarIcon(self.widget_action)
-        del self.widget_action
+            self.map_canvas.setMapTool(QgsMapToolPan(self.iface.mapCanvas()))
+
+        del self.tool_bar
 
     def run(self, is_checked):
-        if is_checked and self.combobox.isHidden():
-            self.prevTool = self.canvas.mapTool()
-            self.combobox.show()
-            self.combobox_add_items()
-            self.canvas.setMapTool(self.tool)
+        if is_checked:
+            self.prevTool = self.map_canvas.mapTool()
+            self.map_canvas.setMapTool(self.swipe_tool)
         else:
-            self.canvas.setMapTool(self.prevTool)
-            self.combobox.hide()
-
-    def _create_widget(self):
-        icon = QIcon(os.path.join(plugin_path, 'icon.png'))
-        # 新建widget
-        self.widget = QWidget(self.iface.mainWindow())
-        self.widget.setMinimumHeight(self.height)
-        self.hlayout = QHBoxLayout(self.widget)
-        self.hlayout.setContentsMargins(0, 0, 0, 0)
-        self.pushbutton = QPushButton(icon, '', self.widget)
-        self.pushbutton.setToolTip(self.title)
-        self.pushbutton.setMinimumSize(self.height, self.height)
-        self.pushbutton.setIconSize(self.icon_size)
-        self.pushbutton.setCheckable(True)
-        self.pushbutton.setFlat(True)
-        self.combobox = QComboBox(self.widget)
-        self.combobox.setMinimumHeight(self.icon_size.height())
-        self.hlayout.addWidget(self.pushbutton)
-        self.hlayout.addWidget(self.combobox)
-
-        self.combobox.hide()
-        self.combobox_add_items()
-        self.pushbutton.clicked.connect(self.run)
+            self.map_canvas.setMapTool(self.prevTool)
 
     def combobox_add_items(self):
-        self.combobox.clear()
-        layers = QgsProject.instance().layerTreeRoot().layerOrder()
-        self.combobox.addItems([layer.name() for layer in layers])
+        self.layer_combobox.clear()
+        layers = project.layerTreeRoot().checkedLayers()
+        names = [layer.name() for layer in layers]
+        self.layer_combobox.addItems(names)
