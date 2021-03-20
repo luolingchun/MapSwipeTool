@@ -2,7 +2,7 @@
 name=MapSwipeTool
 description=地图卷帘工具
 
-version=1.1.0
+version=1.1.1
 tags=swipe,layers
 qgisMinimumVersion=3.0
 author=llc

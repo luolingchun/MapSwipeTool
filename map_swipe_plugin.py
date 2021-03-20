@@ -23,6 +23,7 @@ class MapSwipePlugin:
         self.prevTool = self.map_canvas.mapTool()
 
         self.tool_bar: QToolBar = self.iface.addToolBar('Swipe Toolbar')
+        self.tool_bar.setToolTip("Swipe Toolbar")
         self.swipe_action = QAction(QIcon(os.path.join(here, 'icon.png')), 'swipe tool', self.tool_bar)
         self.swipe_action.setCheckable(True)
         self.swipe_action.triggered.connect(self.run)

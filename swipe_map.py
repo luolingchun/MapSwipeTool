@@ -16,6 +16,10 @@ class SwipeMap(QgsMapCanvasItem):
         self.layers = []
         self.is_paint = False
 
+        self.direction = 0
+        self.start_x = self.start_y = self.end_x = self.end_y = 0
+        self.x = self.y = 0
+
     def setContent(self, image, rect):
         self.copy_image = image
         self.setRect(rect)
@@ -39,24 +43,24 @@ class SwipeMap(QgsMapCanvasItem):
             self.direction = 2
         else:
             self.direction = 3
-        self.startx, self.starty, self.endx, self.endy = 0, 0, self.boundingRect().width(), self.boundingRect().height()
+        self.start_x, self.start_y, self.end_x, self.end_y = 0, 0, self.boundingRect().width(), self.boundingRect().height()
 
     def set_img_extent(self, x, y):
         self.x = x
         self.y = y
         if self.direction == 0:  # 0:'⬇'
-            self.endy = y
+            self.end_y = y
         elif self.direction == 1:  # 1:'⬆'
-            self.starty = y
+            self.start_y = y
         elif self.direction == 2:  # 2:'➡'
-            self.endx = x
+            self.end_x = x
         else:  # 3:'⬅'
-            self.startx = x
+            self.start_x = x
         self.is_paint = True
         self.update()
 
     def paint(self, painter, *args):
-        if len(self.layers) == 0 or self.is_paint == False:
+        if len(self.layers) == 0 or self.is_paint is False:
             return
 
         w = self.boundingRect().width()
@@ -73,5 +77,5 @@ class SwipeMap(QgsMapCanvasItem):
             painter.setPen(pen)
             painter.drawLine(QPointF(0, self.y), QPointF(w, self.y))
 
-        image = self.copy_image.copy(self.startx, self.starty, self.endx, self.endy)
-        painter.drawImage(QRectF(self.startx, self.starty, self.endx, self.endy), image)
+        image = self.copy_image.copy(self.start_x, self.start_y, self.end_x, self.end_y)
+        painter.drawImage(QRectF(self.start_x, self.start_y, self.end_x, self.end_y), image)
