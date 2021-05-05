@@ -2,8 +2,8 @@
 # @Author  : llc
 # @Time    : 2020/3/10 14:59
 
-from PyQt5.QtCore import QRectF, QPointF, Qt
-from PyQt5.QtGui import QPen, QColor
+from qgis.PyQt.QtCore import QRectF, QPointF, Qt
+from qgis.PyQt.QtGui import QPen, QColor
 from qgis.gui import QgsMapCanvasItem
 
 

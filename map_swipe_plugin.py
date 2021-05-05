@@ -4,8 +4,8 @@
 
 import os
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QComboBox, QAction, QToolBar
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QComboBox, QAction, QToolBar
 from qgis.core import QgsProject
 from qgis.gui import QgsMapToolPan, QgisInterface
 
@@ -36,7 +36,7 @@ class MapSwipePlugin:
         self.swipe_tool = MapSwipeTool(height, self.layer_combobox, self.map_canvas)
 
         # 图层变化信号
-        project.layerTreeRoot().layerOrderChanged.connect(self.combobox_add_items)
+        project.layerTreeRoot().layerOrderChanged.connect(lambda: self.combobox_add_items())
         project.layerTreeRoot().visibilityChanged.connect(self.combobox_add_items)
         project.layerTreeRoot().nameChanged.connect(self.combobox_add_items)
 

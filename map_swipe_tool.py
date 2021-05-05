@@ -3,8 +3,8 @@
 # @Time    : 2020/3/10 14:58
 
 import os
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QCursor, QPixmap
+from qgis.PyQt.QtCore import Qt, QPoint
+from qgis.PyQt.QtGui import QCursor, QPixmap
 from qgis.gui import QgsMapTool
 from qgis.core import QgsProject, QgsMapSettings, QgsMapRendererParallelJob
 from .swipe_map import SwipeMap
