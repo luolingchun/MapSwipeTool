@@ -1,13 +1,14 @@
 [general]
 name=MapSwipeTool
-description=地图卷帘工具
+description=Swipe active layer
 
-version=1.1.2
+version=1.2.0
 tags=swipe,layers
 qgisMinimumVersion=3.0
 author=llc
-email=luolingchun.com@gmail.com
+email=luolingchun@outlook.com
 homepage=https://github.com/luolingchun/MapSwipeTool
+tracker=https://github.com/luolingchun/MapSwipeTool/issues
 repository=https://github.com/luolingchun/MapSwipeTool
 
 icon=icon.png

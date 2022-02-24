@@ -4,5 +4,5 @@
 
 
 def classFactory(iface):
-    from .map_swipe_plugin import MapSwipePlugin
-    return MapSwipePlugin(iface)
+    from .swipe import Swipe
+    return Swipe(iface)
