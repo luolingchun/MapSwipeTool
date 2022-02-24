@@ -14,7 +14,7 @@ class SwipeMapItem(QgsMapCanvasItem):
         self.line = None
         self.startPaint = False
 
-        self.direction = 0
+        self.direction = -1
         self.x = 0
         self.y = 0
         self.w = 0
@@ -23,7 +23,12 @@ class SwipeMapItem(QgsMapCanvasItem):
     def updateImageRect(self, x, y):
         w = self.boundingRect().width()
         h = self.boundingRect().height()
-        if self.direction == 0:  # 0:'⬇'
+        if self.direction == -1:  # all
+            self.x = 0
+            self.y = 0
+            self.w = w
+            self.h = h
+        elif self.direction == 0:  # 0:'⬇'
             self.x = 0
             self.y = 0
             self.w = w
@@ -58,7 +63,8 @@ class SwipeMapItem(QgsMapCanvasItem):
         pen.setColor(QColor(18, 150, 219))
         pen.setWidth(4)
         painter.setPen(pen)
-        painter.drawLine(self.line)
+        if self.line:
+            painter.drawLine(self.line)
 
         image = self.image.copy(self.x, self.y, self.w, self.h)
         painter.drawImage(QRectF(self.x, self.y, self.w, self.h), image)
