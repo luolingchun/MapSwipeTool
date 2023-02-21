@@ -4,6 +4,7 @@
 
 import os
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QComboBox, QAction, QToolBar
 from qgis.core import QgsProject
@@ -20,6 +21,7 @@ class Swipe:
     def __init__(self, iface):
         self.iface: QgisInterface = iface
         self.mapCanvas = self.iface.mapCanvas()
+        self.preMapTool = None
 
         self.toolBar: QToolBar = self.iface.addToolBar('Swipe Toolbar')
         self.toolBar.setToolTip("Swipe Toolbar")
@@ -75,3 +77,20 @@ class Swipe:
     def mapCanvasMapToolSet(self, newTool, _):
         if newTool.__class__.__name__ != 'SwipeMapTool':
             self.swipeAction.setChecked(False)
+            if self.preMapTool == "SwipeMapTool":
+                self.mapCanvas.renderStarting.disconnect(self.renderStarting)
+                self.mapCanvas.renderComplete.disconnect(self.renderComplete)
+            self.preMapTool = None
+        else:
+            self.preMapTool = "SwipeMapTool"
+            self.mapCanvas.renderStarting.connect(self.renderStarting)
+            self.mapCanvas.renderComplete.connect(self.renderComplete)
+
+    def renderStarting(self):
+        self.mapCanvas.setCursor(Qt.BusyCursor)
+
+    def renderComplete(self):
+        cursor = self.mapCanvas.cursor()
+        pos = cursor.pos()
+        # 触发鼠标移动事件
+        cursor.setPos(pos.x() + 1, pos.y() + 1)

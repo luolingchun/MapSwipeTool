@@ -70,11 +70,15 @@ class SwipeMapTool(QgsMapTool):
         job.waitForFinished()
 
     def keyPressEvent(self, e):
+        if self.mapCanvas.isDrawing():
+            return
         if e.modifiers() == Qt.ControlModifier:
             self.mapCanvas.setCursor(self.cursorBox)
             self.controlDown = True
 
     def keyReleaseEvent(self, e) -> None:
+        if self.mapCanvas.isDrawing():
+            return
         if not e.isAutoRepeat():
             self.controlDown = False
             pos = self.cursorBox.pos()
@@ -82,6 +86,8 @@ class SwipeMapTool(QgsMapTool):
             self.cursorBox.setPos(pos.x() + 1, pos.y() + 1)
 
     def canvasPressEvent(self, e):
+        if self.mapCanvas.isDrawing():
+            return
         self.startSwipe = True
         w, h = self.mapCanvas.width(), self.mapCanvas.height()
         if not self.controlDown:
@@ -103,6 +109,8 @@ class SwipeMapTool(QgsMapTool):
             self.mapItem.updateImageRect(w, h)
 
     def canvasMoveEvent(self, e):
+        if self.mapCanvas.isDrawing():
+            return
         if self.controlDown:
             return
         if self.startSwipe:
