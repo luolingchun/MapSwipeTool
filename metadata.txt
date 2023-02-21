@@ -2,7 +2,7 @@
 name=MapSwipeTool
 description=Swipe active layer
 
-version=1.2.0
+version=1.2.1
 tags=swipe,layers
 qgisMinimumVersion=3.0
 author=llc
