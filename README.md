@@ -9,7 +9,7 @@ QGIS插件——地图卷帘工具，参考已有的[地图卷帘工具](https:/
 
 ## 安装说明
 
-下载zip包，使用QGIS中Install from ZIP安装
+[下载zip包](https://github.com/luolingchun/MapSwipeTool/archive/refs/heads/master.zip)，使用QGIS中Install from ZIP安装
 
 ## 使用说明
 
