@@ -66,5 +66,5 @@ class SwipeMapItem(QgsMapCanvasItem):
         if self.line:
             painter.drawLine(self.line)
 
-        image = self.image.copy(self.x, self.y, self.w, self.h)
+        image = self.image.copy(int(self.x), int(self.y), int(self.w), int(self.h))
         painter.drawImage(QRectF(self.x, self.y, self.w, self.h), image)
