@@ -60,9 +60,9 @@ class SwipeMapItem(QgsMapCanvasItem):
             self.line = QLineF(0, y, w, y)
         elif self.direction == 1:  # 1:'⬆'
             self.x = 0
-            self.y = y*scaling_factor
+            self.y = y
             self.w = w
-            self.h = h - y*scaling_factor
+            self.h = h - y
             self.line = QLineF(0, y, w, y)
         elif self.direction == 2:  # 2:'➡'
             self.x = 0
@@ -71,9 +71,9 @@ class SwipeMapItem(QgsMapCanvasItem):
             self.h = h
             self.line = QLineF(x, 0, x, h)
         else:  # 3:'⬅'
-            self.x = x*scaling_factor
+            self.x = x
             self.y = 0
-            self.w = w - x*scaling_factor
+            self.w = w - x
             self.h = h
             self.line = QLineF(x, 0, x, h)
         self.startPaint = True
@@ -90,7 +90,7 @@ class SwipeMapItem(QgsMapCanvasItem):
         if self.line:
             painter.drawLine(self.line)
 
-        image = self.image.copy(int(self.x), int(
-            self.y), int(self.w), int(self.h))
+        image = self.image.copy(int(self.x*scaling_factor), int(
+            self.y*scaling_factor), int(self.w), int(self.h))
         painter.drawImage(QRectF(self.x,
                           self.y, self.w/scaling_factor, self.h/scaling_factor), image)
