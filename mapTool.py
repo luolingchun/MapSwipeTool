@@ -64,6 +64,9 @@ class SwipeMapTool(QgsMapTool):
         settings = QgsMapSettings(self.mapCanvas.mapSettings())
         settings.setLayers(self.layers)
 
+        # 适应高分辨率缩放
+        settings.setDevicePixelRatio(1)
+
         job = QgsMapRendererParallelJob(settings)
         job.start()
         job.finished.connect(finished)
