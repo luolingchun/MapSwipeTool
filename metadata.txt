@@ -2,9 +2,9 @@
 name=MapSwipeTool
 description=Swipe active layer
 
-version=1.2.3
+version=2.0.0
 tags=swipe,layers
-qgisMinimumVersion=3.0
+qgisMinimumVersion=4.0
 author=llc
 email=luolingchun@outlook.com
 homepage=https://github.com/luolingchun/MapSwipeTool
