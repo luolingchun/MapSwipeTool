@@ -29,7 +29,7 @@ class Swipe:
         self.swipeAction.setCheckable(True)
         self.swipeAction.triggered.connect(self.swipeActionTriggered)
         self.layerCombobox = QComboBox()
-        self.layerCombobox.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        self.layerCombobox.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.layerCombobox.setFixedHeight(self.iface.iconSize().height())
 
         self.swipeTool = SwipeMapTool(self.layerCombobox, self.mapCanvas)
@@ -87,7 +87,7 @@ class Swipe:
             self.mapCanvas.renderComplete.connect(self.renderComplete)
 
     def renderStarting(self):
-        self.mapCanvas.setCursor(Qt.BusyCursor)
+        self.mapCanvas.setCursor(Qt.CursorShape.BusyCursor)
 
     def renderComplete(self):
         cursor = self.mapCanvas.cursor()

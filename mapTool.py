@@ -75,7 +75,7 @@ class SwipeMapTool(QgsMapTool):
     def keyPressEvent(self, e):
         if self.mapCanvas.isDrawing():
             return
-        if e.modifiers() == Qt.ControlModifier:
+        if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
             self.mapCanvas.setCursor(self.cursorBox)
             self.controlDown = True
 
@@ -93,20 +93,21 @@ class SwipeMapTool(QgsMapTool):
             return
         self.startSwipe = True
         w, h = self.mapCanvas.width(), self.mapCanvas.height()
+        x, y = e.pos().x(), e.pos().y()
         if not self.controlDown:
-            if 0.25 * w < e.x() < 0.75 * w and e.y() < 0.5 * h:
+            if 0.25 * w < x < 0.75 * w and y < 0.5 * h:
                 self.mapItem.direction = 0  # '⬇'
                 self.mapCanvas.setCursor(self.cursorSH)
-            elif 0.25 * w < e.x() < 0.75 * w and e.y() > 0.5 * h:
+            elif 0.25 * w < x < 0.75 * w and y > 0.5 * h:
                 self.mapItem.direction = 1  # '⬆'
                 self.mapCanvas.setCursor(self.cursorSH)
-            elif e.x() < 0.25 * w:
+            elif x < 0.25 * w:
                 self.mapItem.direction = 2  # '➡'
                 self.mapCanvas.setCursor(self.cursorSV)
             else:  # elif e.x() > 0.75 * w:
                 self.mapItem.direction = 3  # '⬅'
                 self.mapCanvas.setCursor(self.cursorSV)
-            self.mapItem.updateImageRect(e.x(), e.y())
+            self.mapItem.updateImageRect(x, y)
         else:
             self.mapItem.direction = -1  # all
             self.mapItem.updateImageRect(w, h)
@@ -117,17 +118,18 @@ class SwipeMapTool(QgsMapTool):
         if self.controlDown:
             return
         if self.startSwipe:
-            self.mapItem.updateImageRect(e.x(), e.y())
+            self.mapItem.updateImageRect(e.pos().x(), e.pos().y())
         else:
             # 设置当前cursor
             w, h = self.mapCanvas.width(), self.mapCanvas.height()
-            if e.x() < 0.25 * w:
+            x, y = e.pos().x(), e.pos().y()
+            if x < 0.25 * w:
                 self.mapCanvas.setCursor(self.cursorRight)
-            if e.x() > 0.75 * w:
+            if x > 0.75 * w:
                 self.mapCanvas.setCursor(self.cursorLeft)
-            if 0.25 * w < e.x() < 0.75 * w and e.y() < 0.5 * h:
+            if 0.25 * w < x < 0.75 * w and y < 0.5 * h:
                 self.mapCanvas.setCursor(self.cursorDown)
-            if 0.25 * w < e.x() < 0.75 * w and e.y() > 0.5 * h:
+            if 0.25 * w < x < 0.75 * w and y > 0.5 * h:
                 self.mapCanvas.setCursor(self.cursorUp)
 
     def canvasReleaseEvent(self, e):

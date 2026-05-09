@@ -59,7 +59,7 @@ class SwipeMapItem(QgsMapCanvasItem):
         if self.startPaint is False:
             return
 
-        pen = QPen(Qt.DashDotDotLine)
+        pen = QPen(Qt.PenStyle.DashDotDotLine)
         pen.setColor(QColor(18, 150, 219))
         pen.setWidth(4)
         painter.setPen(pen)
